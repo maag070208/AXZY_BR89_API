@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  username String @unique
+  password String
+  name     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  invoiceDetail InvoiceDetail[]
+
+  role   Role     @relation(fields: [roleId], references: [id])
+  roleId Int
+  BoxCut BoxCut[]
+  BoxOut BoxOut[]
+  Tips   Tips[]
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  user User[]
+}
+
+model BoxCut {
+  id       Int    @id @default(autoincrement())
+  card     Int    @default(0)
+  btc      Int    @default(0)
+  cash     Int    @default(0)
+  cashUSD  Int    @default(0)
+  cashFund Int
+  image    String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+  status    String   @default("open")
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  boxOut    BoxOut[]
+  tips      Tips[]
+}
+
+model BoxOut {
+  id          Int      @id @default(autoincrement())
+  amount      Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  boxCutId    Int
+  boxCut      BoxCut   @relation(fields: [boxCutId], references: [id])
+}
+
+model Tips {
+  id          Int      @id @default(autoincrement())
+  amount      Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  boxCutId    Int
+  boxCut      BoxCut   @relation(fields: [boxCutId], references: [id])
+}
+
+model Invoice {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  invoiceNumber String      @unique //FACTURA PROVEEDOR - CONTENEDOR
+  receiptDate   String      @default("") // FECHA DE RECIBO
+  invoiceType   InvoiceType @default(NATIONAL) //TIPO DE FACTURA NACIONAL O IMPORTACION
+  status        String      @default("pending") //ESTADO DE LA FACTURA
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  invoiceDetail InvoiceDetail[] //DETALLE DE LA FACTURA
+
+  //KARDO
+  sended Boolean @default(false) //FACTURA ENVIADA
+}
+
+model InvoiceDetail {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  quantity            Decimal @default(0) // UNIDADES DE LA FACTURA
+  boxQuantity         Decimal @default(0) //CAJAS DE LA FACTURA
+  unitsPerBox         Decimal @default(0) //UNIDADES POR CAJA
+  physicalQuantity    Decimal @default(0)
+  physicalAssignItems Decimal @default(0)
+  physicalBoxQuantity Decimal @default(0)
+  difference          Decimal @default(0)
+  status              String  @default("pending")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  productId Int //RELACION CON EL PRODUCTO
+  product   Product @relation(fields: [productId], references: [id])
+
+  invoiceId Int //RELACION CON LA FACTURA
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  userId Int? //RELACION CON EL USUARIO
+  user   User? @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  code        String @unique
+  name        String
+  description String
+  unitMeasure String
+
+  stock Decimal @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  invoiceDetail   InvoiceDetail[]
+  productLocation ProductLocation[]
+}
+
+model ProductLocation {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  quantity Decimal @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  productId Int //RELACION CON EL PRODUCTO
+  product   Product @relation(fields: [productId], references: [id])
+
+  locationId Int //RELACION CON LA UBICACION
+  location   Location @relation(fields: [locationId], references: [id])
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+
+  name            String            @unique
+  description     String            @default("")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  active          Boolean           @default(true)
+  ProductLocation ProductLocation[]
+}
+
+enum InvoiceType {
+  NATIONAL
+  INTERNATIONAL
+}

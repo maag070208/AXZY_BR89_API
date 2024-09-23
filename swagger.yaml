@@ -1,0 +1,488 @@
+openapi: 3.0.3
+info:
+  title: AXZY BERLIN89 API
+  description: BERLIN89 API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4321
+    description: Local server
+tags:
+  - name: index
+    description: Operations about index
+paths:
+  /api/v1:
+    get:
+      tags:
+        - index
+      summary: Get index
+      operationId: getIndex
+      responses:
+        "200":
+          description: Index
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  /api/v1/upload:
+    post:
+      tags:
+        - index
+      summary: Upload file
+      operationId: uploadFile
+      responses:
+        "200":
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  #users
+  /api/v1/users:
+    get:
+      tags:
+        - index
+      summary: Get users
+      operationId: getUsers
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+    post:
+      tags:
+        - index
+      summary: Create user
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "200":
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - index
+      summary: Get user
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+    put:
+      tags:
+        - index
+      summary: Update user
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of user
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+    delete:
+      tags:
+        - index
+      summary: Delete user
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  /api/v1/users/login:
+    post:
+      tags:
+        - index
+      summary: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  #boxcuts
+  /api/v1/boxcut:
+    get:
+      tags:
+        - index
+      summary: Get boxcuts
+      operationId: getBoxCuts
+      responses:
+        "200":
+          description: Boxcuts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Boxcut"
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  /api/v1/boxcut/close/{id}:
+    put:
+      tags:
+        - index
+      summary: Create boxcut
+      operationId: createBoxCut
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFullBoxCut"
+      responses:
+        "200":
+          description: Boxcut created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  /api/v1/boxcut/open:
+    post:
+      tags:
+        - index
+      summary: Open boxcut
+      operationId: openBoxCut
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBoxCut"
+      responses:
+        "200":
+          description: Boxcut opened
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TResult"
+  #schemas
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+    CreateUser:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+    Boxcut:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        cash:
+          type: number
+        cashUSD:
+          type: number
+        card:
+          type: number
+        btc:
+          type: number
+        image:
+          type: string
+        outs:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: number
+              description:
+                type: string
+        tips:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: number
+              description:
+                type: string
+    CreateBoxCut:
+      type: object
+      properties:
+        userId:
+          type: number
+        cashFund:
+          type: number
+    CreateFullBoxCut:
+      type: object
+      properties:
+        userId:
+          type: number
+        cash:
+          type: string
+        cashUSD:
+          type: string
+        card:
+          type: string
+        btc:
+          type: string
+        image:
+          type: string
+        outs:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: string
+              description:
+                type: string
+        tips:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: string
+              description:
+                type: string
+    TResult:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+        success:
+          type: boolean
+  #
